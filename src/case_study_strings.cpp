@@ -23,6 +23,7 @@ static void BM_trim_whitespace_naive(benchmark::State& state)
     for (auto _ : state)
     {
         std::string res = trim_whitespace_naive(input);
+        benchmark::ClobberMemory();
     }
 }
 BENCHMARK(BM_trim_whitespace_naive);
@@ -49,6 +50,7 @@ static void BM_trim_whitespace_eliminate_copying_args(benchmark::State& state)
     for (auto _ : state)
     {
         std::string res = trim_whitespace_eliminate_copying_args(input);
+        benchmark::ClobberMemory();
     }
 }
 BENCHMARK(BM_trim_whitespace_eliminate_copying_args);
@@ -75,6 +77,7 @@ static void BM_trim_whitespace_eliminate_temporaries(benchmark::State& state)
     for (auto _ : state)
     {
         std::string res = trim_whitespace_eliminate_temporaries(input);
+        benchmark::ClobberMemory();
     }
 }
 BENCHMARK(BM_trim_whitespace_eliminate_temporaries);
@@ -101,6 +104,7 @@ static void BM_trim_whitespace_eliminate_copying_returned(benchmark::State& stat
     {
         std::string res;
         trim_whitespace_eliminate_copying_returned(input, res);
+        benchmark::ClobberMemory();
     }
 }
 BENCHMARK(BM_trim_whitespace_eliminate_copying_returned);
@@ -130,6 +134,7 @@ static void BM_trim_whitespace_different_approach(benchmark::State& state)
     for (auto _ : state)
     {
         std::string res = trim_whitespace_different_approach(input);
+        benchmark::ClobberMemory();
     }
 }
 BENCHMARK(BM_trim_whitespace_different_approach);
@@ -157,6 +162,7 @@ static void BM_trim_whitespace_c_strings(benchmark::State& state)
         char* res = new char[input.length() + 1];
         trim_whitespace_c_strings(input.c_str(), res, input.length());
         delete[] res;
+        benchmark::ClobberMemory();
     }
 }
 BENCHMARK(BM_trim_whitespace_c_strings);
