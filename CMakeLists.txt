@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.11...3.20)
 project(CppOptimization)
 
+set(CMAKE_BUILD_TYPE Release)
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
@@ -28,3 +29,4 @@ function(compile_executables target_name file_path)
 endfunction()
 
 compile_executables(benchmark_setup_test ${CMAKE_CURRENT_SOURCE_DIR}/src/benchmark_setup_test.cpp)
+compile_executables(case_study_strings ${CMAKE_CURRENT_SOURCE_DIR}/src/case_study_strings.cpp)
