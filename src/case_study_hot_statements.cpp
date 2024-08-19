@@ -6,8 +6,8 @@
 
 static void BM_uncache_loop_end_value(benchmark::State& state)
 {
-    char* input = new char[10000];
-    std::memset(input, ' ', 10000);
+    char* input = new char[100000];
+    std::memset(input, ' ', 100000);
     for (auto _ : state)
     {
         int count_whitespace = 0;
@@ -19,6 +19,7 @@ static void BM_uncache_loop_end_value(benchmark::State& state)
             }
         }
         benchmark::DoNotOptimize(count_whitespace);
+        benchmark::ClobberMemory();
     }
     delete[] input;
 }
@@ -28,12 +29,12 @@ BENCHMARK(BM_uncache_loop_end_value);
 
 static void BM_cache_loop_end_value(benchmark::State& state)
 {
-    char* input = new char[10000];
-    std::memset(input, ' ', 10000);
+    char* input = new char[100000];
+    std::memset(input, ' ', 100000);
+    std::size_t len = strlen(input);
     for (auto _ : state)
     {
         int count_whitespace = 0;
-        std::size_t len = strlen(input);
         for (std::size_t i = 0U; i < len; i++)
         {
             if (input[i] == ' ')
@@ -42,6 +43,7 @@ static void BM_cache_loop_end_value(benchmark::State& state)
             }
         }
         benchmark::DoNotOptimize(count_whitespace);
+        benchmark::ClobberMemory();
     }
     delete[] input;
 }
@@ -59,14 +61,18 @@ void replace_whitespaces(char& c)
 
 static void BM_function_call_overheat(benchmark::State& state)
 {
-    std::string input(10000, ' ');
+    char* input = new char[100000];
+    std::memset(input, ' ', 100000);
+    std::size_t len = strlen(input);
     for (auto _ : state)
     {
-        for (std::size_t i = 0U; i < input.length(); i++)
+        for (std::size_t i = 0U; i < len; i++)
         {
             replace_whitespaces(input[i]);
         }
+        benchmark::ClobberMemory();
     }
+    delete[] input;
 }
 BENCHMARK(BM_function_call_overheat);
 
@@ -74,17 +80,21 @@ BENCHMARK(BM_function_call_overheat);
 
 static void BM_reduce_function_call_overheat(benchmark::State& state)
 {
-    std::string input(10000, ' ');
+    char* input = new char[100000];
+    std::memset(input, ' ', 100000);
+    std::size_t len = strlen(input);
     for (auto _ : state)
     {
-        for (char& c : input)
+        for (std::size_t i = 0U; i < len; i++)
         {
-            if (c == ' ')
+            if (input[i] == ' ')
             {
-                c = '_';
+                input[i] = '_';
             }
         }
+        benchmark::ClobberMemory();
     }
+    delete[] input;
 }
 BENCHMARK(BM_reduce_function_call_overheat);
 
