@@ -30,3 +30,4 @@ endfunction()
 
 compile_executables(benchmark_setup_test ${CMAKE_CURRENT_SOURCE_DIR}/src/benchmark_setup_test.cpp)
 compile_executables(case_study_strings ${CMAKE_CURRENT_SOURCE_DIR}/src/case_study_strings.cpp)
+compile_executables(case_study_hot_statements ${CMAKE_CURRENT_SOURCE_DIR}/src/case_study_hot_statements.cpp)
