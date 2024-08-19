@@ -1,12 +1,22 @@
-cmake_minimum_required(VERSION 3.10)
+cmake_minimum_required(VERSION 3.11...3.20)
 project(CppOptimization)
 
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(BENCHMARK_ENABLE_GTEST_TESTS OFF)
+set(BENCHMARK_ENABLE_TESTING OFF)
 
-# https://github.com/google/benchmark
-find_package(benchmark REQUIRED)
 find_package(Threads)
+
+include(FetchContent)
+
+FetchContent_Declare(
+    google_benchmark
+    GIT_REPOSITORY https://github.com/google/benchmark.git
+    GIT_TAG main
+)
+
+FetchContent_MakeAvailable(google_benchmark)
 
 function(compile_executables target_name file_path)
     add_executable(${target_name} ${file_path})

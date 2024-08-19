@@ -4,30 +4,37 @@
 #include <set>
 #include <unordered_set>
 
-std::unordered_set<int> S;
-
-static void DoSetUp(const benchmark::State& state)
+static void BM_test_set(benchmark::State& state)
 {
-    for (auto i = 0; i < state.range(0); i++)
+    std::set<int> S;
+    for (int i = 0; i < 10; i++)
     {
-        S.insert(state.range(i + 1));
+        S.insert(i);
     }
-}
 
-static void DoTearDown(const benchmark::State& state)
-{
-    S.clear();
-}
-
-static void BM_test(benchmark::State& state)
-{
     for (auto _ : state)
     {
-        S.find(5);
+        S.find(state.range(0));
     }
     state.SetBytesProcessed(S.size() * state.iterations());
 }
 
-BENCHMARK(BM_test)->Setup(DoSetUp)->Teardown(DoTearDown)->Args({5, 1, 2, 3, 4, 5})->Args({10, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+static void BM_test_unordered_set(benchmark::State& state)
+{
+    std::unordered_set<int> S;
+    for (int i = 0; i < 10; i++)
+    {
+        S.insert(i);
+    }
+
+    for (auto _ : state)
+    {
+        S.find(state.range(0));
+    }
+    state.SetBytesProcessed(S.size() * state.iterations());
+}
+
+BENCHMARK(BM_test_set)->Arg(5)->Arg(7);
+BENCHMARK(BM_test_unordered_set)->Arg(5)->Arg(7);
 
 BENCHMARK_MAIN();
