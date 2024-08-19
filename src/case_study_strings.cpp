@@ -1,4 +1,6 @@
 #include <benchmark/benchmark.h>
+
+#include <iostream>
 #include <string>
 
 std::string trim_whitespace_naive(std::string s)
@@ -17,7 +19,7 @@ std::string trim_whitespace_naive(std::string s)
 
 static void BM_trim_whitespace_naive(benchmark::State& state)
 {
-    std::string input = "this is a string";
+    std::string input = "this is a very long string using for the case study strings";
     for (auto _ : state)
     {
         std::string res = trim_whitespace_naive(input);
@@ -27,7 +29,33 @@ BENCHMARK(BM_trim_whitespace_naive);
 
 /////////////////////////////////////////////////////////////////////////////////
 
-std::string trim_whitespace_eliminate_temporaries(std::string s)
+std::string trim_whitespace_eliminate_copying_args(const std::string& s)
+{
+    std::string res;
+    for (std::size_t i = 0U; i < s.length(); i++)
+    {
+        if (s[i] != ' ')
+        {
+            res = res + s[i];
+        }
+    }
+
+    return res;
+}
+
+static void BM_trim_whitespace_eliminate_copying_args(benchmark::State& state)
+{
+    std::string input = "this is a very long string using for the case study strings";
+    for (auto _ : state)
+    {
+        std::string res = trim_whitespace_eliminate_copying_args(input);
+    }
+}
+BENCHMARK(BM_trim_whitespace_eliminate_copying_args);
+
+/////////////////////////////////////////////////////////////////////////////////
+
+std::string trim_whitespace_eliminate_temporaries(const std::string& s)
 {
     std::string res;
     for (std::size_t i = 0U; i < s.length(); i++)
@@ -43,7 +71,7 @@ std::string trim_whitespace_eliminate_temporaries(std::string s)
 
 static void BM_trim_whitespace_eliminate_temporaries(benchmark::State& state)
 {
-    std::string input = "this is a string";
+    std::string input = "this is a very long string using for the case study strings";
     for (auto _ : state)
     {
         std::string res = trim_whitespace_eliminate_temporaries(input);
@@ -53,61 +81,10 @@ BENCHMARK(BM_trim_whitespace_eliminate_temporaries);
 
 /////////////////////////////////////////////////////////////////////////////////
 
-std::string trim_whitespace_iterators(std::string s)
-{
-    std::string res;
-    for (auto it = s.begin(); it != s.end(); it++)
-    {
-        if (*it != ' ')
-        {
-            res += *it;
-        }
-    }
-
-    return res;
-}
-
-static void BM_trim_whitespace_iterators(benchmark::State& state)
-{
-    std::string input = "this is a string";
-    for (auto _ : state)
-    {
-        std::string res = trim_whitespace_iterators(input);
-    }
-}
-BENCHMARK(BM_trim_whitespace_iterators);
-
-/////////////////////////////////////////////////////////////////////////////////
-
-std::string trim_whitespace_eliminate_copying_args(const std::string& s)
-{
-    std::string res;
-    for (std::size_t i = 0U; i < s.length(); i++)
-    {
-        if (s[i] != ' ')
-        {
-            res += s[i];
-        }
-    }
-
-    return res;
-}
-
-static void BM_trim_whitespace_eliminate_copying_args(benchmark::State& state)
-{
-    std::string input = "this is a string";
-    for (auto _ : state)
-    {
-        std::string res = trim_whitespace_eliminate_copying_args(input);
-    }
-}
-BENCHMARK(BM_trim_whitespace_eliminate_copying_args);
-
-/////////////////////////////////////////////////////////////////////////////////
-
 void trim_whitespace_eliminate_copying_returned(const std::string& s, std::string& res)
 {
     res.clear();
+    res.reserve(s.length());
     for (std::size_t i = 0U; i < s.length(); i++)
     {
         if (s[i] != ' ')
@@ -119,10 +96,10 @@ void trim_whitespace_eliminate_copying_returned(const std::string& s, std::strin
 
 static void BM_trim_whitespace_eliminate_copying_returned(benchmark::State& state)
 {
-    std::string input = "this is a string";
-    std::string res;
+    std::string input = "this is a very long string using for the case study strings";
     for (auto _ : state)
     {
+        std::string res;
         trim_whitespace_eliminate_copying_returned(input, res);
     }
 }
@@ -130,36 +107,59 @@ BENCHMARK(BM_trim_whitespace_eliminate_copying_returned);
 
 /////////////////////////////////////////////////////////////////////////////////
 
-static void BM_trim_whitespace_c_strings(benchmark::State& state)
+std::string trim_whitespace_different_approach(std::string s)
 {
+    for (std::size_t i = 0U; i < s.length(); )
+    {
+        if (s[i] == ' ')
+        {
+            s.erase(i, 1);
+        }
+        else
+        {
+            i++;
+        }
+    }
+
+    return s;
+}
+
+static void BM_trim_whitespace_different_approach(benchmark::State& state)
+{
+    std::string input = "this is a very long string using for the case study strings";
     for (auto _ : state)
     {
+        std::string res = trim_whitespace_different_approach(input);
+    }
+}
+BENCHMARK(BM_trim_whitespace_different_approach);
 
+/////////////////////////////////////////////////////////////////////////////////
+
+void trim_whitespace_c_strings(const char* src, char* dest, std::size_t len)
+{
+    for (std::size_t i = 0U; i < len; i++)
+    {
+        if (src[i] != ' ')
+        {
+            *dest = src[i];
+            dest++;
+        }
+    }
+    *dest = '\0';
+}
+
+static void BM_trim_whitespace_c_strings(benchmark::State& state)
+{
+    std::string input = "this is a very long string using for the case study strings";
+    for (auto _ : state)
+    {
+        char* res = new char[input.length() + 1];
+        trim_whitespace_c_strings(input.c_str(), res, input.length());
+        delete[] res;
     }
 }
 BENCHMARK(BM_trim_whitespace_c_strings);
-
-/////////////////////////////////////////////////////////////////////////////////
-
-static void BM_trim_whitespace_improved_algorithm(benchmark::State& state)
-{
-    for (auto _ : state)
-    {
-
-    }
-}
-BENCHMARK(BM_trim_whitespace_improved_algorithm);
-
-/////////////////////////////////////////////////////////////////////////////////
-
-static void BM_trim_whitespace_improved_allocator(benchmark::State& state)
-{
-    for (auto _ : state)
-    {
-
-    }
-}
-BENCHMARK(BM_trim_whitespace_improved_allocator);
 
 
 BENCHMARK_MAIN();
