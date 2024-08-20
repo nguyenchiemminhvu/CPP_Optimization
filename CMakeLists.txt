@@ -33,7 +33,6 @@ compile_executables(case_study_strings ${CMAKE_CURRENT_SOURCE_DIR}/src/case_stud
 compile_executables(case_study_hot_statements ${CMAKE_CURRENT_SOURCE_DIR}/src/case_study_hot_statements.cpp)
 compile_executables(case_study_search_sort ${CMAKE_CURRENT_SOURCE_DIR}/src/case_study_search_sort.cpp)
 compile_executables(case_study_input_output ${CMAKE_CURRENT_SOURCE_DIR}/src/case_study_input_output.cpp)
-compile_executables(case_study_multithreading ${CMAKE_CURRENT_SOURCE_DIR}/src/case_study_multithreading.cpp)
 compile_executables(case_study_memory_management ${CMAKE_CURRENT_SOURCE_DIR}/src/case_study_memory_management.cpp)
 
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/files)
