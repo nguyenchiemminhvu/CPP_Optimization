@@ -35,3 +35,9 @@ compile_executables(case_study_search_sort ${CMAKE_CURRENT_SOURCE_DIR}/src/case_
 compile_executables(case_study_input_output ${CMAKE_CURRENT_SOURCE_DIR}/src/case_study_input_output.cpp)
 compile_executables(case_study_multithreading ${CMAKE_CURRENT_SOURCE_DIR}/src/case_study_multithreading.cpp)
 compile_executables(case_study_memory_management ${CMAKE_CURRENT_SOURCE_DIR}/src/case_study_memory_management.cpp)
+
+file(MAKE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/files)
+add_custom_target(copy_files ALL
+    COMMAND ${CMAKE_COMMAND} -E copy ${CMAKE_CURRENT_SOURCE_DIR}/files/* ${CMAKE_CURRENT_BINARY_DIR}/files
+    DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/files/sample_file.txt
+)
